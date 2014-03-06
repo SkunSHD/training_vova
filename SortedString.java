@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class SortedString {
 	
@@ -17,7 +18,12 @@ public class SortedString {
 		for (String s : array) {
 			System.out.println(s);
 		}
-	} 
+		System.out.println("------------------------");
+	}
+
+	public void sortArray() {
+		Arrays.sort(array);
+	}
 
 	private String[] keyBoard(String mess) {
 		System.out.print(mess + ": ");
