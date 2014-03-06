@@ -1,16 +1,24 @@
-import java.util.Scanner;
-import java.util.Arrays;
+import java.util.*;
 
 public class SortedString {
 	
-	private String[] array;	
-	
+	private String[] array;
+	private boolean flag_length;	
+	private boolean flag_number;
+
 	public SortedString(String[] args) {
 		if (args.length != 0) {
-			array = args;
+			if (args[0].equals("-D")) {
+				array = Arrays.copyOfRange(args ,1, args.length);
+				flag_length = true;
+			} else {
+				array = args;
+			}
 		} else {
-			array = keyBoard("Input text");	
+			System.out.println("You not input parameter. Try again");
 		}
+		print();
+		sort();
 		print();
 	}
 
@@ -21,15 +29,31 @@ public class SortedString {
 		System.out.println("------------------------");
 	}
 
-	public void sortArray() {
+	public void sort() {
+		if (flag_length){
+				sortByLength();
+		} else if(flag_number) {
+				sortByNumber();
+			} else {
+				sortByABC();
+			}
+		 
+	}
+
+	private void sortByABC() {
 		Arrays.sort(array);
 	}
 
-	private String[] keyBoard(String mess) {
-		System.out.print(mess + ": ");
-		Scanner scan = new Scanner(System.in);
-		String line = scan.nextLine();
-		return line.split(" ");
+	private void sortByLength() {
+		Arrays.sort(array, new Comparator<String>(){
+  			public int compare(String s1,String s2) {
+    			return s1.length() - s2.length();
+    		}
+		});
 	}
 
+	private void sortByNumber() {
+
+	} 
+		
 }
