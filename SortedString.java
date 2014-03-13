@@ -1,4 +1,5 @@
 import java.util.*;
+import java.math.BigDecimal;
 
 public class SortedString {
 	
@@ -11,22 +12,25 @@ public class SortedString {
 			if (args[0].equals("-D")) {
 				array = Arrays.copyOfRange(args ,1, args.length);
 				flag_length = true;
-			} else {
+			} 
+			else {
 				array = args;
 			}
 		} else {
 			System.out.println("You not input parameter. Try again");
 		}
-		print();
+		print("Default lines");
 		sort();
-		print();
+		print("Sort lines");
 	}
 
-	private void print() {
+	private void print(String mess) {
+		System.out.println(mess + ":");
 		for (String s : array) {
-			System.out.println(s);
+			System.out.print(s + " ");
 		}
-		System.out.println("------------------------");
+		System.out.println();
+		System.out.println("##########################");
 	}
 
 	public void sort() {
@@ -41,19 +45,27 @@ public class SortedString {
 	}
 
 	private void sortByABC() {
-		Arrays.sort(array);
+				Arrays.sort(array, new Comparator<String>(){
+  			public int compare(String s1,String s2) {	
+  				if (s1.equalsIgnoreCase(s2)) {
+  					return 1;
+  				} else {
+  					return -1;
+  				}
+    		}
+		});
 	}
 
 	private void sortByLength() {
 		Arrays.sort(array, new Comparator<String>(){
-  			public int compare(String s1,String s2) {
+  			public int compare(String s1,String s2) {	
     			return s1.length() - s2.length();
     		}
 		});
 	}
 
 	private void sortByNumber() {
-
+	
 	} 
 		
 }
