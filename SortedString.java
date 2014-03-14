@@ -1,27 +1,25 @@
 import java.util.*;
-import java.math.BigDecimal;
 
 public class SortedString {
 	
 	private String[] array;
 	private boolean flag_length;	
 	private boolean flag_number;
+	private int index;
 
 	public SortedString(String[] args) {
 		if (args.length != 0) {
 			if (args[0].equals("-D")) {
 				array = Arrays.copyOfRange(args ,1, args.length);
 				flag_length = true;
-			} 
-			else {
+			} else {
 				array = args;
 			}
+			print("Default lines");
 		} else {
 			System.out.println("You not input parameter. Try again");
 		}
-		print("Default lines");
-		sort();
-		print("Sort lines");
+
 	}
 
 	private void print(String mess) {
@@ -34,25 +32,25 @@ public class SortedString {
 	}
 
 	public void sort() {
-		if (flag_length){
-				sortByLength();
-		} else if(flag_number) {
-				sortByNumber();
+		if (array != null) {
+			if (flag_length){
+					sortByLength();
 			} else {
-				sortByABC();
-			}
-		 
+					sortByABC_Reg();
+				}
+			print("Sort lines"); 
+		}
 	}
 
 	private void sortByABC() {
-				Arrays.sort(array, new Comparator<String>(){
-  			public int compare(String s1,String s2) {	
-  				if (s1.equalsIgnoreCase(s2)) {
-  					return 1;
-  				} else {
-  					return -1;
-  				}
-    		}
+		Arrays.sort(array);
+	}
+
+	private void sortByABC_Reg() {
+		Arrays.sort(array, new Comparator<String>(){
+  			public int compare(String s1,String s2) {
+  				return s1.compareToIgnoreCase(s2);
+  			}
 		});
 	}
 
@@ -63,9 +61,4 @@ public class SortedString {
     		}
 		});
 	}
-
-	private void sortByNumber() {
-	
-	} 
-		
 }
