@@ -21,9 +21,12 @@ public class Client extends Thread {
    				InputStreamReader(socket.getInputStream()));
    			out = new PrintWriter(socket.getOutputStream(),true);
    			while ((msg = in.readLine()) != null) {
-   				if (msg.equalsIgnoreCase("exit")) 
+   				if (msg.equalsIgnoreCase("exit")) {
+   					System.out.println("Client disconnected"); 
    					break;
-   				System.out.println(msg);
+   				} else {
+   					System.out.println(msg);
+   				}
    			}
    		} catch (IOException ex) {
 			ex.printStackTrace(System.err);

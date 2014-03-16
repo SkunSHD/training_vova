@@ -10,6 +10,7 @@ public class ChatServer {
 	public ChatServer() {
 		try {
 			ServerSocket ss = new ServerSocket(port);
+			System.out.println("Waiting for a client ...");
 			while (true) {
 				Socket socket = null;
 				while(socket == null) {
