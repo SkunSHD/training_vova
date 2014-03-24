@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 import ua.gajdamaka.client.Client;
+import ua.gajdamaka.message.Message;
 
 public class ClientThread extends Thread {
 	
@@ -16,15 +17,17 @@ public class ClientThread extends Thread {
 	}
 
 	public void run() {
-		String  msg;
-   		try {
+		String line;
+		try {
 			final BufferedReader in  = new BufferedReader(new 
    				InputStreamReader(socket.getInputStream()));
    			final PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-   			client = ChatServer.getUserList().addUser(socket, in, out);   			
+   			client = new Client(socket, in, out);
+   			ChatServer.getUserList().addUser(client);   			
    			while (true) {
-   				if ((msg = in.readLine()) != null) {
-   					if (msg.equalsIgnoreCase("exit")) {
+   				if ((line = in.readLine()) != null) {
+   					Message msg = new Message(line);
+   					if (msg.getMessage().equalsIgnoreCase("exit")) {
    						System.out.println("Client disconnected");
    						out.println("Bye");
    						in.close();
@@ -32,7 +35,8 @@ public class ClientThread extends Thread {
    						socket.close(); 
    						break;
    					} else {
-   						System.out.println(msg);
+   						System.out.println(msg.getMessage());
+   						ChatServer.getMessageHistory().addMessage(msg);
    						this.broadcast(ChatServer.getUserList().getList(), msg);
    					}
    				}	
@@ -43,10 +47,10 @@ public class ClientThread extends Thread {
 
 	}
 
-	public void broadcast(ArrayList<Client> list, String msg) {
+	public void broadcast(ArrayList<Client> list, Message msg) {
 		for (Client cl : list) {
 			if (cl != client) {
-				cl.getPrintWriter().println(msg);
+				cl.getPrintWriter().println(msg.getMessage());
 			}
 		}
 	}

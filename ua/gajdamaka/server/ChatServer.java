@@ -4,10 +4,12 @@ import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 import ua.gajdamaka.client.UserList;
+import ua.gajdamaka.message.MessageHistory;
 
 public class ChatServer {
 	private static final int PORT = 1234;
 	private static UserList list = new UserList();
+	private static MessageHistory messages = new MessageHistory();
 
 	public ChatServer() {
 		try {
@@ -30,5 +32,9 @@ public class ChatServer {
 
 	public synchronized static UserList getUserList() {
         return list;
+    }
+
+    public synchronized static MessageHistory getMessageHistory() {
+        return messages;
     }
 } 
