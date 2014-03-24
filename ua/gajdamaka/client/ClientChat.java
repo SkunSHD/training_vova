@@ -10,51 +10,71 @@ public class ClientChat{
 	private BufferedReader in;
 	private PrintWriter out;
 	private Socket socket;
+	private String login;
 
-	public ClientChat() {
-		try {
-			socket = new Socket(IP_ADRESS, PORT);
-			System.out.println("Trying ..." + socket.getInetAddress().getHostAddress());
-			System.out.println("Connected to localhost");
-			BufferedReader input = new BufferedReader(new 
+	public ClientChat(String login) {
+			try {
+				socket = new Socket(IP_ADRESS, PORT);
+				this.login = login; 
+				System.out.println("Trying ..." + socket.getInetAddress().getHostAddress());
+				System.out.println("Connected to localhost");
+			
+				in  = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
+
+				out = new PrintWriter(socket.getOutputStream(),true);
+			} catch(IOException ex) {
+				System.out.println("Error Connected");
+			}
+			if (socket != null) {
+				Thread t_out = new Thread(new Runnable(){
+					public void run() {
+						outputMessage();
+					}
+				});
+				Thread t_in = new Thread(new Runnable(){
+					public void run() {
+						inputMessage();
+					}
+				});
+				t_out.start();
+				t_in.start();
+			}			
+	}
+
+	private void inputMessage() {
+		String msg = null;
+		BufferedReader input = new BufferedReader(new 
    				InputStreamReader(System.in));
-
-			in  = new BufferedReader(
-				new InputStreamReader(socket.getInputStream()));
-
-			out = new PrintWriter(socket.getOutputStream(),true);
-			String msg = null;
-
-			Thread t = new Thread(new Runnable(){
-				public void run() {
-					String msg;
-    				try {
-      					while ((msg = in.readLine()) != null) {
-        					System.out.println("Server: " + msg);
-        					if (msg.equalsIgnoreCase("Bye")){
-        						in.close();
-        						out.close();
-          						socket.close();
-          						break;
-        					}
-      					}
-    				} catch (IOException ex) {
-      					ex.printStackTrace(System.err);
-    				}
-				}
-			});
-			t.start();
+		try {
 			while ((msg = input.readLine()) != null) {
 				if (msg.equalsIgnoreCase("exit")) {
 					System.out.println("Connection closed by foreign host.");
 					out.println(msg);
 					break;
 				} else {
-					out.println(msg);
+					out.println(login + ": " + msg);
 				}
 			}
 		} catch(IOException ex) {
-			ex.printStackTrace(System.err);
+			System.out.println("Error input stream");
 		}
+	}
+
+	private void outputMessage() {
+		String msg;
+    	try {
+      		while ((msg = in.readLine()) != null) {
+        		System.out.println(msg);
+        		if (msg.equalsIgnoreCase("Bye")){
+        			in.close();
+        			out.close();
+          			socket.close();
+          			break;
+        		}
+      		}
+    	} catch (IOException ex) {
+      		System.out.println("Error output stream");
+    	}
 	}
 }
