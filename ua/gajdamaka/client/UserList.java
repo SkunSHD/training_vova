@@ -8,14 +8,21 @@ public class UserList {
 	
 	private ArrayList<Client> list = new  ArrayList<Client>();
 
-	public Client addUser(Socket socket, BufferedReader in, PrintWriter out) {
-		Client client = new Client(socket, in, out); 
+	public void addUser(Client client) {
 		list.add(client);
-		return client;
 	}
 
-	public ArrayList getList() {
+	public ArrayList<Client> getList() {
 		return list;
+	}
+
+	public boolean findUser(Client client) {
+		for (int i = 0; i < list.size(); i++) {
+			if (client.equals(list.get(i))) {
+				return true;
+			} 
+		}
+		return false;
 	}
 
 }

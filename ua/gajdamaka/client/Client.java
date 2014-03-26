@@ -9,26 +9,30 @@ import ua.gajdamaka.server.ChatServer;
 public class Client {
 	
 	private Socket socket;
-	private BufferedReader in;
-	private PrintWriter out; 
+	private ObjectInputStream in;
+	private ObjectOutputStream out; 
 
-	public Client(Socket socket,  BufferedReader in, PrintWriter out) {
+	public Client(Socket socket,  ObjectInputStream in, ObjectOutputStream out) {
 		this.socket = socket;
 		this.in = in;
 		this.out = out;
-		if (ChatServer.getMessageHistory().deSer() != null) {
-			ArrayList<Message> history = ChatServer.getMessageHistory().deSer().getHistoryMessage();
-			for (Message msg : history) {
-				this.out.println(msg.getMessage());
+		if (ChatServer.getMessageHistory() != null) {
+			ArrayList<Message> history = ChatServer.getMessageHistory().getHistoryMessage();
+			try {
+				for (Message message : history) {
+					this.out.writeObject(message);
+				}
+			} catch (IOException ex) {
+				System.out.println("IO error");
 			}
 		}
 	}
 
-	public BufferedReader getBufferedReader() {
+	public ObjectInputStream getObjInStream() {
 		return in;
 	}
 
-	public PrintWriter getPrintWriter() {
+	public ObjectOutputStream getObjOutStream() {
 		return out;
 	}
 
