@@ -44,7 +44,7 @@ public class ClientThread extends Thread {
    					} else {
    						System.out.println("Login: " + message.getLogin() 
    							+ "  " + message.getDate());
-   						System.out.println(message.getMessage());
+   						System.out.println("Message :" +  message.getMessage());
    						ChatServer.getMessageHistory().addMessage(message);
    						this.broadcast(ChatServer.getUserList().getList(), message);
    					}
