@@ -8,7 +8,7 @@ import ua.gajdamaka.message.MessageHistory;
 
 public class ChatServer {
 	private static final int PORT = 1234;
-	private static UserList list = new UserList();
+	private static UserList users = new UserList();
 	private static MessageHistory messages = new MessageHistory();
 
 	public ChatServer() {
@@ -16,12 +16,16 @@ public class ChatServer {
 			ServerSocket ss = new ServerSocket(PORT);
 			System.out.println("Waiting for a client ...");
 			while (true) {
-				Socket socket = null;
-				while(socket == null) {
-					socket = ss.accept();
-					System.out.println("Joined a new client");
-				}
-				new ClientThread(socket);
+					Socket socket = null;
+						while(socket == null) {
+							socket = ss.accept();
+						}
+					if (users.count() < 10){
+						new ClientThread(socket);
+					} else {
+						socket.close();
+						continue;	
+					}
 			}
 		} catch (SocketException ex) {
             ex.printStackTrace(System.err);
@@ -31,7 +35,7 @@ public class ChatServer {
 	}
 
 	public synchronized static UserList getUserList() {
-        return list;
+        return users;
     }
 
     public synchronized static MessageHistory getMessageHistory() {
