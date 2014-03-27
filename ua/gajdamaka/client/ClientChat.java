@@ -3,13 +3,12 @@ package ua.gajdamaka.client;
 import java.net.*;
 import java.io.*;
 import ua.gajdamaka.message.Message;
+import ua.gajdamaka.Config;
 import java.util.Scanner;
 
 
 public class ClientChat{
 
-	private static final String IP_ADRESS = "localhost";
-	private static final int PORT = 1234;
 	private Socket socket;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
@@ -18,7 +17,7 @@ public class ClientChat{
 	public ClientChat() {
 			
 			try {
-				socket = new Socket(IP_ADRESS, PORT);
+				socket = new Socket(Config.IP_ADRESS, Config.PORT);
 				out = new ObjectOutputStream(socket.getOutputStream());
 				in  = new ObjectInputStream(socket.getInputStream());
 				if (socket != null) {
@@ -77,7 +76,7 @@ public class ClientChat{
     	try {
       		while ((mess = (Message) in.readObject()) != null) {
         		System.out.println("Login: " + mess.getLogin() + "   " + mess.getDate());
-   				System.out.println(mess.getMessage() );
+   				System.out.println("Message: " + mess.getMessage() );
         		if (mess.getMessage().equalsIgnoreCase("Bye")){
         			in.close();
         			out.close();
