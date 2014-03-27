@@ -3,6 +3,7 @@ package ua.gajdamaka.client;
 import java.net.*;
 import java.io.*;
 import ua.gajdamaka.message.Message;
+import java.util.Scanner;
 
 
 public class ClientChat{
@@ -14,13 +15,10 @@ public class ClientChat{
 	private ObjectOutputStream out;
 	private String login;
 
-	public ClientChat(String login) {
+	public ClientChat() {
 			
 			try {
 				socket = new Socket(IP_ADRESS, PORT);
-				this.login = login;
-				System.out.println("Trying ..." + socket.getInetAddress().getHostAddress());
-				System.out.println("Connected to localhost");
 				out = new ObjectOutputStream(socket.getOutputStream());
 				in  = new ObjectInputStream(socket.getInputStream());
 				if (socket != null) {
@@ -48,6 +46,17 @@ public class ClientChat{
    				InputStreamReader(System.in));
 			
 		try {
+			while (true) {
+				System.out.print("Input your name: ");
+				login = input.readLine();
+				if (login != null) {
+					out.writeUTF(login);
+					out.flush();
+					System.out.println("Trying ..." + socket.getInetAddress().getHostAddress());
+					System.out.println("Connected to localhost");
+					break;	
+				}
+			}
 			while ((msg = input.readLine()) != null) {
 				Message message = new Message(login, msg, socket.getRemoteSocketAddress().toString());
 				if (msg.equalsIgnoreCase("exit")) {
