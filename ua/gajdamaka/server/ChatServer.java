@@ -5,22 +5,22 @@ import java.io.*;
 import java.util.ArrayList;
 import ua.gajdamaka.client.UserList;
 import ua.gajdamaka.message.MessageHistory;
+import ua.gajdamaka.Config;
 
 public class ChatServer {
-	private static final int PORT = 1234;
 	private static UserList users = new UserList();
 	private static MessageHistory messages = new MessageHistory();
 
 	public ChatServer() {
 		try {
-			ServerSocket ss = new ServerSocket(PORT);
+			ServerSocket ss = new ServerSocket(Config.PORT);
 			System.out.println("Waiting for a client ...");
 			while (true) {
 					Socket socket = null;
 						while(socket == null) {
 							socket = ss.accept();
 						}
-					if (users.count() < 10){
+					if (users.count() < Config.MAX_USERS){
 						new ClientThread(socket);
 					} else {
 						socket.close();
