@@ -3,6 +3,7 @@ package ua.gajdamaka.client;
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import ua.gajdamaka.message.Message;
 
 public class UserList {
 	
@@ -19,8 +20,8 @@ public class UserList {
 			}
 			users.put(login, client);
 		}
-		System.out.println(login + " is connected!!! ");
-
+		System.out.println(login + " is connected to server!!! ");
+		broadcast(login, client);
 	}
 
 	public void deleteUser(String login){
@@ -39,13 +40,16 @@ public class UserList {
 		return users.size();
 	}
 
-	/*public boolean findUser(Client client) {
-		for (int i = 0; i < list.size(); i++) {
-			if (client.equals(list.get(i))) {
-				return true;
-			} 
+	public void broadcast(String login, Client client) {
+		Message message = new Message("Server", login + " is connected to server!!! ", "localhost", "Info message");
+		try {
+			for (Client cl : this.getList()) {
+				if (cl != client) {
+					cl.getObjOutStream().writeObject(message);
+				}
+			}
+		} catch (IOException ex) {
+			System.out.println("Connected error!!!");
 		}
-		return false;
-	}*/
-
+	}
 }

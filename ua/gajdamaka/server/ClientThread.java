@@ -34,7 +34,7 @@ public class ClientThread extends Thread {
    				if ((message = (Message) in.readObject()) != null) {
    					if (message.getMessage().equalsIgnoreCase("exit")) {
    						System.out.println("Client disconnected");
-   						Message msg = new Message("Server", "Bye", socket.getInetAddress().getHostAddress());
+   						Message msg = new Message("Server", "Bye", socket.getInetAddress().getHostAddress(), "Info mess");
    						out.writeObject(msg);
    						ChatServer.getUserList().deleteUser(login);
    						in.close();
@@ -42,8 +42,8 @@ public class ClientThread extends Thread {
    						socket.close(); 
    						break;
    					} else {
-   						System.out.println("Login: " + message.getLogin() 
-   							+ "  " + message.getDate());
+   						System.out.println("Login: " + message.getLogin() + " (Status: " 
+                        + message.getStatus() + ")  " + message.getDate());
    						System.out.println("Message :" +  message.getMessage());
    						ChatServer.getMessageHistory().addMessage(message);
    						this.broadcast(ChatServer.getUserList().getList(), message);
@@ -53,7 +53,8 @@ public class ClientThread extends Thread {
    		} catch (ClassNotFoundException ex) {
    			System.out.println("Class not found");
    		} catch (IOException ex) {
-			System.out.println("Run Connected error!!!");
+            ex.printStackTrace(System.err);
+			   System.out.println("Run Connected error!!!");
 		}
 
 	}
