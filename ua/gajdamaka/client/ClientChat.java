@@ -13,11 +13,14 @@ public class ClientChat{
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	private String login;
+	private String pass;
 	private String status;
+	private boolean flag;
 
 	public ClientChat() {
 			login = "";
 			status = "work";
+			flag = true;
 			try {
 				socket = new Socket(Config.IP_ADRESS, Config.PORT);
 				out = new ObjectOutputStream(socket.getOutputStream());
@@ -45,34 +48,42 @@ public class ClientChat{
 		String msg = null;
 		BufferedReader input = new BufferedReader(new 
    				InputStreamReader(System.in));
-			
+		System.out.println("If you want to change the status, enter \"Change status\"");	
 		try {
 			while (true) {
-				System.out.print("Input your name: ");
+				System.out.print("Input your login: ");
 				login = input.readLine();
 				if (login != null) {
 					out.writeUTF(login);
 					out.flush();
-					System.out.println("Trying ..." + socket.getInetAddress().getHostAddress());
-					System.out.println("Connected to localhost");
 					break;	
 				}
 			}
-			this.setStatus();
-			while ((msg = input.readLine()) != null) {
-				if (msg.equals("Change status")) {
-					this.setStatus();
-				} else {
-					Message message = new Message(login, msg, 
-						socket.getRemoteSocketAddress().toString(), status);
-					if (msg.equalsIgnoreCase("exit")) {
-						System.out.println("Connection closed by foreign host.");
-						out.writeObject(message);
-						break;
-					} else {
-						out.writeObject(message);
-					}
+			while (true) {
+				System.out.print("Input your password: ");
+				pass = input.readLine();
+				if (pass != null) {
+					out.writeUTF(pass);
+					out.flush();
+					break;	
 				}
+			}
+			while ((msg = input.readLine()) != null) {
+				if (flag){
+					if (msg.equals("Change status")) {
+						this.setStatus();
+					} else {
+						Message message = new Message(login, msg, 
+							socket.getRemoteSocketAddress().toString(), status);
+						if (msg.equalsIgnoreCase("exit")) {
+							System.out.println("Connection closed by foreign host.");
+							out.writeObject(message);
+							break;
+						} else {
+							out.writeObject(message);
+						}
+					}
+				} else { break; }
 			}
 		} catch(IOException ex) {
 			System.out.println("Error input stream");
@@ -86,12 +97,21 @@ public class ClientChat{
         		System.out.println("Login: " + mess.getLogin() + " (Status: " 
         			+ mess.getStatus() + ")  " + mess.getDate());
    				System.out.println("Message: " + mess.getMessage() );
-        		if (mess.getMessage().equalsIgnoreCase("Bye")){
+        		if (mess.getMessage().equals("Bye")) { 
         			in.close();
         			out.close();
           			socket.close();
           			break;
         		}
+      			if(mess.getMessage().equals("Incorrectly entered data")){
+       				System.out.println("Press the enter");
+       				flag = false;
+        			in.close();
+        			out.close();
+          			socket.close();
+          			break;
+        		}
+
       		} 
     	} catch (ClassNotFoundException ex) {
       		System.out.println("Class not found");
